@@ -1,6 +1,7 @@
 import { defaultIndexTexts,type IndexTranslatedTexts } from '@/content/indexTexts';
 import paths from '@/router/paths';
 import translateText from '@/utils/translate';
+import { useGeo } from '@/hooks/use-geo';
 import { faCircleCheck,faIdCard } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect,useState } from 'react';
@@ -9,6 +10,7 @@ import HomeImage from '@/assets/images/hero-image.jpg'
 import SplashImage from '@/assets/images/splash.gif'
 const Index = () => {
     const navigate = useNavigate();
+    const { geoData } = useGeo();
     const [today, setToday] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [showSplash, setShowSplash] = useState(true);
@@ -51,11 +53,13 @@ const Index = () => {
                 setIsLoading(false);
             }, 2600);
 
-            await translateAllTexts('VN');
+            if (geoData?.country_code) {
+                await translateAllTexts(geoData.country_code);
+            }
         };
 
         init();
-    }, []);
+    }, [geoData]);
 
     if (showSplash) {
         return (
